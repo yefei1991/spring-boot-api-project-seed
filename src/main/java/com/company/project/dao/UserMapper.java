@@ -8,5 +8,5 @@ import com.company.project.model.User;
 
 public interface UserMapper extends Mapper<User> {
 	
-	List<Resource> selectResourceByUser(Integer userId);
+	List<Resource> findResourceByUser(Integer userId);
 }

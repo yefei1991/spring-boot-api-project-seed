@@ -12,7 +12,7 @@
     <result column="deleted" jdbcType="BIT" property="deleted" />
   </resultMap>
   
-  <select id="selectResourceByUser" resultType="com.company.project.model.Resource">
+  <select id="findResourceByUser" resultType="com.company.project.model.Resource">
 	  SELECT DISTINCT
 		t2.* 
 		FROM

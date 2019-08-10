@@ -1,17 +1,22 @@
 package com.company.project.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.company.project.core.AbstractService;
 import com.company.project.core.Result;
 import com.company.project.dao.UserMapper;
+import com.company.project.model.Resource;
 import com.company.project.model.User;
 import com.company.project.util.Conditions;
 import com.company.project.util.Utils;
-
-import tk.mybatis.mapper.entity.Condition;
 
 
 /**
@@ -33,6 +38,33 @@ public class UserService extends AbstractService<User> {
     	if(!user.getEnable()) {
     		Utils.ServiceException("用户已被锁定,请联系管理员");
     	}
-    	return null;
+    	List<Resource> resources=userMapper.findResourceByUser(user.getId());
+    	JSONObject currentUser=new JSONObject();
+    	currentUser.put("id", user.getId());
+    	currentUser.put("name", user.getUsername());
+    	List<JSONObject> currentMenu=new ArrayList<>();
+    	Map<Integer,JSONObject> maps=new HashMap<>();
+    	for(Resource r:resources) {
+    		JSONObject json=new JSONObject();
+    		json.put("exact", true);
+			json.put("name", r.getName());
+			json.put("path", r.getResurl());
+    	}
+    	for(Resource r:resources) {
+    		if(r.getParentid()==0) {
+    			currentMenu.add(maps.get(r.getId()));
+    		}else {
+    			JSONObject parent=maps.get(r.getParentid());
+    			if(parent.get("children")==null) {
+    				parent.put("children", new ArrayList<JSONObject>());
+    			}
+    			((List<JSONObject>)parent.get("children")).add(maps.get(r.getId()));
+    		}
+    		
+    	}
+    	JSONObject result=new JSONObject();
+    	result.put("currentUser", currentUser);
+    	result.put("currentMenu", currentMenu);
+    	return Utils.success(result);
     }
 }
