@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.User">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="enable" jdbcType="INTEGER" property="enable" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  
+  <select id="selectResourceByUser" resultType="com.company.project.model.Resource">
+	  SELECT DISTINCT
+		t2.* 
+		FROM
+			user_role t
+			LEFT JOIN role_resources t1 ON t.roleId = t1.roleId
+			LEFT JOIN resource t2 ON t1.resourcesId = t2.id 
+		WHERE
+			t.userId = #{userId} 
+			AND t2.deleted = 0 
+			AND t2.type IN ( 0, 1 )
+		ORDER BY
+		sort ASC
+  </select>
+</mapper>

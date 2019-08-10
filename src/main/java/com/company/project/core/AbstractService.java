@@ -1,13 +1,17 @@
 package com.company.project.core;
 
 
-import org.apache.ibatis.exceptions.TooManyResultsException;
-import org.springframework.beans.factory.annotation.Autowired;
-import tk.mybatis.mapper.entity.Condition;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+
+import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.company.project.util.Utils;
+
+import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example.Criteria;
 
 /**
  * 基于通用MyBatis Mapper插件的Service接口的实现
@@ -67,6 +71,18 @@ public abstract class AbstractService<T> implements Service<T> {
 
     public List<T> findByCondition(Condition condition) {
         return mapper.selectByCondition(condition);
+    }
+    
+    public T findOneByCondition(Condition condition) {
+    	List<T> list=mapper.selectByCondition(condition);
+    	if(list.size()>1) {
+    		Utils.ServiceException("数据库查询不唯一");
+    	}
+    	return list.get(0);
+    }
+    
+    public Criteria notDeleted(Criteria cri) {
+    	return cri.andEqualTo("deleted", false);
     }
 
     public List<T> findAll() {
