@@ -32,7 +32,7 @@ public class UserService extends AbstractService<User> {
     	Conditions con=Conditions.instance(User.class);
     	con.notDeleted().andEqualTo("username", username);
     	User user=this.findOneByCondition(con);
-    	if(user==null||password.equals(user.getPassword())) {
+    	if(user==null||!password.equals(user.getPassword())) {
     		Utils.ServiceException("用户名或密码错误");
     	}
     	if(!user.getEnable()) {
@@ -49,6 +49,7 @@ public class UserService extends AbstractService<User> {
     		json.put("exact", true);
 			json.put("name", r.getName());
 			json.put("path", r.getResurl());
+			maps.put(r.getId(), json);
     	}
     	for(Resource r:resources) {
     		if(r.getParentid()==0) {

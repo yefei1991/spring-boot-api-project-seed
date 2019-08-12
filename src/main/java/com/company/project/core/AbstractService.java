@@ -78,6 +78,9 @@ public abstract class AbstractService<T> implements Service<T> {
     	if(list.size()>1) {
     		Utils.ServiceException("数据库查询不唯一");
     	}
+    	if(list.size()==0) {
+    		return null;
+    	}
     	return list.get(0);
     }
     
