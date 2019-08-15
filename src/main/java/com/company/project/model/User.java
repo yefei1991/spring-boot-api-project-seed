@@ -10,6 +10,8 @@ public class User {
     private String username;
 
     private String password;
+    
+    private String name;
 
     /**
      * 是否启用
@@ -75,7 +77,15 @@ public class User {
         return deleted;
     }
 
-    /**
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
      * @param deleted
      */
     public void setDeleted(Boolean deleted) {

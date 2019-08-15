@@ -21,4 +21,12 @@ public class Utils {
 	public static Result failure(String message) {
 		return ResultGenerator.genFailResult(message);
 	}
+	
+	public static void sleep(long time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

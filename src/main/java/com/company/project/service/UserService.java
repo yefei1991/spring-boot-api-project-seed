@@ -17,6 +17,9 @@ import com.company.project.model.Resource;
 import com.company.project.model.User;
 import com.company.project.util.Conditions;
 import com.company.project.util.Utils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 
 /**
@@ -67,5 +70,14 @@ public class UserService extends AbstractService<User> {
     	result.put("currentUser", currentUser);
     	result.put("currentMenu", currentMenu);
     	return Utils.success(result);
+    }
+    
+    public Result userList(String name,Page page) {
+    	Conditions con=Conditions.instance(User.class);
+    	con.notDeleted().andLike("name", name);
+    	PageHelper.startPage(page.getPageNum(),page.getPageSize());
+    	List<User> list=this.findByCondition(con);
+    	PageInfo pageResult = new PageInfo(list);
+    	return Utils.success(pageResult);
     }
 }
