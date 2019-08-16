@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,10 +76,34 @@ public class UserService extends AbstractService<User> {
     
     public Result userList(String name,Page page) {
     	Conditions con=Conditions.instance(User.class);
-    	con.notDeleted().andLike("name", name);
+    	con.notDeleted();
+    	if(StringUtils.isNotEmpty(name)) {
+    		con.firstCriteria().andLike("name", "%"+name+"%");
+    	}
     	PageHelper.startPage(page.getPageNum(),page.getPageSize());
     	List<User> list=this.findByCondition(con);
     	PageInfo pageResult = new PageInfo(list);
     	return Utils.success(pageResult);
+    }
+    
+    public Result saveOrUpdateUser(User user) {
+    	User userName=this.findByUserName(user.getUsername());
+    	if(userName!=null&&!userName.getId().equals(user.getId())) {
+    		Utils.ServiceException("用户名不能重复");
+    	}
+    	if(user.getId()==null) {
+    		user.setPassword("123456");
+    		user.setEnable(true);
+    		user.setDeleted(false);
+    	}
+    	this.saveOrUpdate(user);
+    	return Utils.success();
+    }
+    
+    public User findByUserName(String username) {
+    	Conditions con=Conditions.instance(User.class);
+    	con.notDeleted().andEqualTo("username", username);
+    	User user=this.findOneByCondition(con);
+    	return user;
     }
 }

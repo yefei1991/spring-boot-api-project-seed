@@ -18,7 +18,7 @@ import static com.company.project.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://10.2.249.12:3306/shiro";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/shiro";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
@@ -37,7 +37,7 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        genCode("user","role","resource");
+        genCode("role");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 
@@ -60,8 +60,8 @@ public class CodeGenerator {
      */
     public static void genCodeByCustomModelName(String tableName, String modelName) {
         genModelAndMapper(tableName, modelName);
-        genService(tableName, modelName);
-        genController(tableName, modelName);
+//        genService(tableName, modelName);
+//        genController(tableName, modelName);
     }
 
 
@@ -87,6 +87,7 @@ public class CodeGenerator {
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         javaModelGeneratorConfiguration.setTargetProject(PROJECT_PATH + JAVA_PATH);
         javaModelGeneratorConfiguration.setTargetPackage(MODEL_PACKAGE);
+        javaModelGeneratorConfiguration.addProperty("rootClass", "com.company.project.core.AbstractModel");
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
@@ -105,7 +106,7 @@ public class CodeGenerator {
         if (StringUtils.isNotEmpty(modelName))tableConfiguration.setDomainObjectName(modelName);
         tableConfiguration.setGeneratedKey(new GeneratedKey("id", "Mysql", true, null));
         context.addTableConfiguration(tableConfiguration);
-
+        
         List<String> warnings;
         MyBatisGenerator generator;
         try {

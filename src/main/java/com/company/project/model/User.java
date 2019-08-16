@@ -1,12 +1,9 @@
 package com.company.project.model;
 
-import javax.persistence.*;
+import com.company.project.core.AbstractModel;
 
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class User extends AbstractModel{
+	
     private String username;
 
     private String password;
@@ -17,22 +14,6 @@ public class User {
      * 是否启用
      */
     private Boolean enable;
-
-    private Boolean deleted;
-
-    /**
-     * @return id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     /**
      * @return username
@@ -70,12 +51,6 @@ public class User {
 		this.enable = enable;
 	}
 
-	/**
-     * @return deleted
-     */
-    public Boolean getDeleted() {
-        return deleted;
-    }
 
     public String getName() {
 		return name;
@@ -85,10 +60,4 @@ public class User {
 		this.name = name;
 	}
 
-	/**
-     * @param deleted
-     */
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
 }

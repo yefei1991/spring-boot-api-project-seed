@@ -1,32 +1,13 @@
 package com.company.project.model;
 
+import com.company.project.core.AbstractModel;
 import javax.persistence.*;
 
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class Role extends AbstractModel {
     private String name;
 
     @Column(name = "roleDesc")
     private String roledesc;
-
-    private Boolean deleted;
-
-    /**
-     * @return id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     /**
      * @return name
@@ -54,19 +35,5 @@ public class Role {
      */
     public void setRoledesc(String roledesc) {
         this.roledesc = roledesc;
-    }
-
-    /**
-     * @return deleted
-     */
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    /**
-     * @param deleted
-     */
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
     }
 }

@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.project.core.AbstractController;
 import com.company.project.core.Result;
+import com.company.project.model.User;
 import com.company.project.service.UserService;
+import com.company.project.util.Utils;
 import com.github.pagehelper.Page;
 
 /**
@@ -29,5 +31,20 @@ public class UserController extends AbstractController{
     	Page page=this.getRequestPage();
     	return userService.userList(name, page);
     }
+    
+    @PostMapping("/save")
+    public Result saveOrUpdate(User user) {
+    	return userService.saveOrUpdateUser(user);
+    }
+    
+    @GetMapping("/info")
+    public Result info(Integer id) {
+    	return Utils.success(userService.findById(id));
+    }
 
+    @PostMapping("/delete")
+    public Result delete(Integer id) {
+    	userService.logicDeleteById(id);
+    	return Utils.success();
+    }
 }

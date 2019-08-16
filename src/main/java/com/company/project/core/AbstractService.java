@@ -3,6 +3,7 @@ package com.company.project.core;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -11,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.company.project.util.Utils;
 
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
 
 /**
  * 基于通用MyBatis Mapper插件的Service接口的实现
  */
-public abstract class AbstractService<T> implements Service<T> {
+public abstract class AbstractService<T extends AbstractModel> {
 
     @Autowired
     protected Mapper<T> mapper;
@@ -39,6 +39,19 @@ public abstract class AbstractService<T> implements Service<T> {
     public void deleteById(Integer id) {
         mapper.deleteByPrimaryKey(id);
     }
+    
+    public void logicDeleteById(Integer id) {
+    	T model=null;
+		try {
+			model = modelClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+    	model.setId(id);
+    	model.setDeleted(true);
+    	mapper.updateByPrimaryKeySelective(model);
+    	
+    }
 
     public void deleteByIds(String ids) {
         mapper.deleteByIds(ids);
@@ -52,7 +65,6 @@ public abstract class AbstractService<T> implements Service<T> {
         return mapper.selectByPrimaryKey(id);
     }
 
-    @Override
     public T findBy(String fieldName, Object value) throws TooManyResultsException {
         try {
             T model = modelClass.newInstance();
@@ -84,11 +96,17 @@ public abstract class AbstractService<T> implements Service<T> {
     	return list.get(0);
     }
     
-    public Criteria notDeleted(Criteria cri) {
-    	return cri.andEqualTo("deleted", false);
-    }
-
     public List<T> findAll() {
         return mapper.selectAll();
+    }
+    
+    public void saveOrUpdate(T t) {
+    	if(t.getId()==null) {
+    		t.setCreatetime(new Date());
+    		mapper.insertSelective(t);
+    	}else {
+    		t.setUpdatetime(new Date());
+    		mapper.updateByPrimaryKeySelective(t);
+    	}
     }
 }

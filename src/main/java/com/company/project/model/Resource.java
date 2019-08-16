@@ -1,11 +1,9 @@
 package com.company.project.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import com.company.project.core.AbstractModel;
 
-public class Resource {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Resource extends AbstractModel{
 
     /**
      * 资源名称
@@ -33,22 +31,6 @@ public class Resource {
      * 排序
      */
     private Integer sort;
-
-    private Boolean deleted;
-
-    /**
-     * @return id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     /**
      * 获取资源名称
@@ -140,17 +122,4 @@ public class Resource {
         this.sort = sort;
     }
 
-    /**
-     * @return deleted
-     */
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    /**
-     * @param deleted
-     */
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
 }
