@@ -109,7 +109,9 @@ public class UserService extends AbstractService<User> {
     
     public Result allocateRole(Integer userId,String roleIdList) {
     	userMapper.deleteUserRole(userId);
-    	userMapper.allocateRole(userId,Utils.toList(roleIdList));
+    	if(StringUtils.isNotEmpty(roleIdList)) {
+    		userMapper.allocateRole(userId,Utils.toList(roleIdList));
+    	}
     	return Utils.success();
     }
 }
