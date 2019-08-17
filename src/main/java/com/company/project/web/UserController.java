@@ -1,4 +1,6 @@
 package com.company.project.web;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +30,7 @@ public class UserController extends AbstractController{
     
     @GetMapping("/list")
     public Result userList(String name) {
-    	Page page=this.getRequestPage();
-    	return userService.userList(name, page);
+    	return userService.userList(getParamMap(), getRequestPage());
     }
     
     @PostMapping("/save")
@@ -46,5 +47,15 @@ public class UserController extends AbstractController{
     public Result delete(Integer id) {
     	userService.logicDeleteById(id);
     	return Utils.success();
+    }
+    
+    @GetMapping("/userRoles")
+    public Result userRoles(Integer userId) {
+    	return userService.findUserRoles(userId);
+    }
+    
+    @PostMapping("/allocateRole")
+    public Result allocateRole(Integer userId,String roleIdList) {
+    	return userService.allocateRole(userId, roleIdList);
     }
 }

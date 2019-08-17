@@ -1,29 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.project.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.company.project.model.User">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="enable" jdbcType="INTEGER" property="enable" />
-    <result column="deleted" jdbcType="BIT" property="deleted" />
-  </resultMap>
-  
-  <select id="findResourceByUser" resultType="com.company.project.model.Resource">
-	  SELECT DISTINCT
-		t2.* 
+	<resultMap id="BaseResultMap"
+		type="com.company.project.model.User">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="username" jdbcType="VARCHAR"
+			property="username" />
+		<result column="password" jdbcType="VARCHAR"
+			property="password" />
+		<result column="enable" jdbcType="INTEGER" property="enable" />
+		<result column="deleted" jdbcType="BIT" property="deleted" />
+	</resultMap>
+
+	<select id="findResourceByUser"
+		resultType="com.company.project.model.Resource">
+		SELECT DISTINCT
+		t2.*
 		FROM
-			user_role t
-			LEFT JOIN role_resources t1 ON t.roleId = t1.roleId
-			LEFT JOIN resource t2 ON t1.resourcesId = t2.id 
+		user_role t
+		LEFT JOIN role_resources t1 ON t.roleId = t1.roleId
+		LEFT JOIN resource t2 ON t1.resourcesId = t2.id
 		WHERE
-			t.userId = #{userId} 
-			AND t2.deleted = 0 
-			AND t2.type IN ( 0, 1 )
+		t.userId = #{userId}
+		AND t2.deleted = 0
+		AND t2.type IN ( 0, 1 )
 		ORDER BY
 		sort ASC
-  </select>
+	</select>
+	
+	<select id="userList" resultType="Map" parameterType="Map">
+		SELECT
+			t.id,
+			t.username,
+			t.name,
+			t.enable,
+			GROUP_CONCAT(t2.roleDesc) role
+		FROM
+			USER t
+			LEFT JOIN user_role t1 ON t.id = t1.userId
+			LEFT JOIN role t2 on
+			t1.roleId=t2.id and t2.deleted=0
+		WHERE
+			t.deleted=0
+			<if test="name != null and name!=''">
+				AND t.NAME like '%${name}%'
+			</if>
+			GROUP BY t.id
+			ORDER BY t.createtime DESC
+	</select>
+	
+	<select id="userRoles" resultType="Map">
+		SELECT
+			t.id value,
+			t.roleDesc label,
+		CASE
+			WHEN t1.userId IS NOT NULL THEN
+			TRUE ELSE FALSE 
+			END checked 
+		FROM
+			role t
+			LEFT JOIN user_role t1 ON t.id = t1.roleId 
+			AND t1.userId = #{userId} 
+		WHERE
+			t.deleted =0
+	</select>
+	
+	<delete id="deleteUserRole">
+		delete from user_role where userId=#{userId}
+	</delete>
+	
+	<insert id="allocateRole">
+		INSERT INTO user_role (userId,roleId) values
+		<foreach collection="roleIdList" item="item" index="index"
+			separator=",">
+			(#{userId},#{item})
+		</foreach>
+	</insert>
 </mapper>

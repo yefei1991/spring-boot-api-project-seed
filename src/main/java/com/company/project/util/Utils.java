@@ -1,5 +1,10 @@
 package com.company.project.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
@@ -28,5 +33,17 @@ public class Utils {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static List<Integer> toList(String ids){
+		List<Integer> idList=new ArrayList<Integer>();
+		if(StringUtils.isEmpty(ids)) {
+			return idList;
+		}
+		String[] idStrList=ids.split(",");
+		for(String s:idStrList) {
+			idList.add(Integer.parseInt(s));
+		}
+		return idList;
 	}
 }

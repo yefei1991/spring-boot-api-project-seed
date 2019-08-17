@@ -74,14 +74,9 @@ public class UserService extends AbstractService<User> {
     	return Utils.success(result);
     }
     
-    public Result userList(String name,Page page) {
-    	Conditions con=Conditions.instance(User.class);
-    	con.notDeleted();
-    	if(StringUtils.isNotEmpty(name)) {
-    		con.firstCriteria().andLike("name", "%"+name+"%");
-    	}
+    public Result userList(Map<String,String> params,Page page) {
     	PageHelper.startPage(page.getPageNum(),page.getPageSize());
-    	List<User> list=this.findByCondition(con);
+    	List<Map<String,Object>> list=userMapper.userList(params);
     	PageInfo pageResult = new PageInfo(list);
     	return Utils.success(pageResult);
     }
@@ -105,5 +100,16 @@ public class UserService extends AbstractService<User> {
     	con.notDeleted().andEqualTo("username", username);
     	User user=this.findOneByCondition(con);
     	return user;
+    }
+    
+    public Result findUserRoles(Integer userId) {
+    	List<Map<String,Object>> result=userMapper.userRoles(userId);
+    	return Utils.success(result);
+    }
+    
+    public Result allocateRole(Integer userId,String roleIdList) {
+    	userMapper.deleteUserRole(userId);
+    	userMapper.allocateRole(userId,Utils.toList(roleIdList));
+    	return Utils.success();
     }
 }
