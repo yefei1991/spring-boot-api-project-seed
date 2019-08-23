@@ -19,8 +19,8 @@
 		t2.*
 		FROM
 		user_role t
-		LEFT JOIN role_resources t1 ON t.roleId = t1.roleId
-		LEFT JOIN resource t2 ON t1.resourcesId = t2.id
+		LEFT JOIN role_resource t1 ON t.roleId = t1.roleId
+		LEFT JOIN resource t2 ON t1.resourceId = t2.id
 		WHERE
 		t.userId = #{userId}
 		AND t2.deleted = 0

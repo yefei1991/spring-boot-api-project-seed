@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.project.dao.RoleMapper">
-  <resultMap id="BaseResultMap" type="com.company.project.model.Role">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="roleDesc" jdbcType="VARCHAR" property="roledesc" />
-    <result column="deleted" jdbcType="BIT" property="deleted" />
-    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
-  </resultMap>
+	<resultMap id="BaseResultMap"
+		type="com.company.project.model.Role">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="roleDesc" jdbcType="VARCHAR"
+			property="roledesc" />
+		<result column="deleted" jdbcType="BIT" property="deleted" />
+		<result column="createTime" jdbcType="TIMESTAMP"
+			property="createtime" />
+		<result column="updateTime" jdbcType="TIMESTAMP"
+			property="updatetime" />
+	</resultMap>
+
+	<select id="roleResources" resultType="Map">
+		SELECT
+			t1.id value,
+			t1.name title,
+			t1.parentId,
+		CASE WHEN t2.roleId IS NOT NULL THEN
+			TRUE ELSE FALSE 
+			END AS checked 
+		FROM
+			resource t1
+			LEFT JOIN role_resource t2 ON t2.resourceId = t1.id 
+			AND t2.roleId = #{roleId}
+		WHERE
+			t1.deleted = 0 
+		ORDER BY
+			t1.sort
+	</select>
+	
+	<delete id="deleteRoleResource">
+		delete from role_resource where roleId=#{roleId}
+	</delete>
+
+	<insert id="allocateResource">
+		INSERT INTO role_resource (roleId,resourceId) values
+		<foreach collection="resourceIdList" item="item" index="index"
+			separator=",">
+			(#{roleId},#{item})
+		</foreach>
+	</insert>
 </mapper>

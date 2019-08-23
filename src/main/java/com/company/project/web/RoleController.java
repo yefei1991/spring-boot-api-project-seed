@@ -41,4 +41,13 @@ public class RoleController extends AbstractController{
     	return Utils.success();
     }
 
+    @GetMapping("/roleResources")
+    public Result roleResources(Integer roleId) {
+    	return roleService.findRoleResources(roleId);
+    }
+    
+    @PostMapping("/allocateResource")
+    public Result allocateResource(Integer roleId,String resourceIdList) {
+    	return roleService.allocateResource(roleId, resourceIdList);
+    }
 }
