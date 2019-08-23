@@ -43,7 +43,7 @@ public class UserController extends AbstractController{
     	return Utils.success(userService.findById(id));
     }
 
-    @PostMapping("/delete1")
+    @PostMapping("/delete")
     public Result delete(Integer id) {
     	userService.logicDeleteById(id);
     	return Utils.success();
