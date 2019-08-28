@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import com.company.project.util.Utils;
 
@@ -16,7 +17,7 @@ import tk.mybatis.mapper.entity.Condition;
 /**
  * 基于通用MyBatis Mapper插件的Service接口的实现
  */
-public abstract class AbstractService<T extends AbstractModel> {
+public abstract class AbstractService<T extends IdModel> {
 
     @Autowired
     protected Mapper<T> mapper;
@@ -44,11 +45,14 @@ public abstract class AbstractService<T extends AbstractModel> {
     	T model=null;
 		try {
 			model = modelClass.newInstance();
+			Assert.state(model instanceof AbstractModel, "model must extends AbstractModel");
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
     	model.setId(id);
-    	model.setDeleted(true);
+    	if(model instanceof AbstractModel) {
+    		((AbstractModel)model).setDeleted(true);
+    	}
     	mapper.updateByPrimaryKeySelective(model);
     	
     }
@@ -101,11 +105,12 @@ public abstract class AbstractService<T extends AbstractModel> {
     }
     
     public void saveOrUpdate(T t) {
+    	Assert.state(t instanceof AbstractModel, "model must extends AbstractModel");
     	if(t.getId()==null) {
-    		t.setCreatetime(new Date());
+    		((AbstractModel)t).setCreatetime(new Date());
     		mapper.insertSelective(t);
     	}else {
-    		t.setUpdatetime(new Date());
+    		((AbstractModel)t).setUpdatetime(new Date());
     		mapper.updateByPrimaryKeySelective(t);
     	}
     }

@@ -7,15 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-public class AbstractModel {
+public class AbstractModel extends IdModel{
 	
 	public AbstractModel() {
 	}
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
 	private Boolean deleted;
 	
 	@Column(name = "createTime")
@@ -24,9 +20,6 @@ public class AbstractModel {
 	@Column(name = "updateTime")
 	private Date updatetime;
 
-	public Integer getId() {
-		return id;
-	}
 
 	public Boolean getDeleted() {
 		return deleted;
@@ -34,10 +27,6 @@ public class AbstractModel {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public Date getCreatetime() {
