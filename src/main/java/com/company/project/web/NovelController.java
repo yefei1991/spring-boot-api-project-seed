@@ -31,17 +31,27 @@ public class NovelController extends AbstractController {
 
 	@GetMapping("/test")
 	public Result test() {
-		Spider spider = downloader.getSpider();
-		List<Request> requests = new ArrayList<>();
-		for (int i = 1; i <= 1; i++) {
-			Request request = new Request(
-					"https://www.x23us.com/modules/article/search.php?searchtype=keywords&searchkey=%C8%FD%B9%FA&page="
-							+ i);
-			request.putExtra("type", "novels");
-			requests.add(request);
-			spider.addRequest(request);
-		}
-		spider.runAsync();
+//		Spider spider = downloader.getSpider();
+//		List<Request> requests = new ArrayList<>();
+//		for (int i = 1; i <= 1; i++) {
+//			Request request = new Request(
+//					"https://www.x23us.com/modules/article/search.php?searchtype=keywords&searchkey=%C8%FD%B9%FA&page="
+//							+ i);
+//			request.putExtra("type", "novels");
+//			requests.add(request);
+//			spider.addRequest(request);
+//		}
+//		spider.runAsync();
 		return ResultGenerator.genSuccessResult();
+	}
+	
+	@GetMapping("/list")
+    public Result list(String name) {
+    	return novelService.list(name, getRequestPage());
+    }
+	
+	@GetMapping("/chapters")
+	public Result chapters(int novelId) {
+		return novelService.findChapterByNovelId(novelId);
 	}
 }
