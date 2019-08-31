@@ -11,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.company.project.core.AbstractService;
 import com.company.project.dao.ChapterMapper;
 import com.company.project.model.Chapter;
+import com.company.project.util.Conditions;
 import com.company.project.util.Converts;
-
-import tk.mybatis.mapper.entity.Example;
 
 
 /**
@@ -26,10 +25,10 @@ public class ChapterService extends AbstractService<Chapter> {
     private ChapterMapper chapterMapper;
     
     public List<Map<String,Object>> getChaptersByNovelId(int novelId){
-    	Example chapterExample=new Example(Chapter.class);
-    	chapterExample.selectProperties("id","title");
-    	chapterExample.and().andEqualTo("novelid",novelId);
-    	return Converts.toMapList(chapterMapper.selectByExample(chapterExample), (t)->{
+    	Conditions con=Conditions.instance(Chapter.class);
+    	con.selectProperties("id","title");
+    	con.firstCriteria().andEqualTo("novelid",novelId);
+    	return Converts.toMapList(this.findByCondition(con), (t)->{
     		Map<String,Object> map=new HashMap<>();
     		map.put("id", t.getId());
     		map.put("title", t.getTitle());
