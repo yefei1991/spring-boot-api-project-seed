@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.company.project.core.AbstractService;
 import com.company.project.core.Result;
 import com.company.project.dao.NovelMapper;
+import com.company.project.model.Chapter;
 import com.company.project.model.Novel;
 import com.company.project.util.Conditions;
 import com.company.project.util.Utils;
@@ -52,4 +53,25 @@ public class NovelService extends AbstractService<Novel> {
     	return Utils.success(map);
     }
 
+    public Result findDetailByChapterId(int chapterId) {
+    	Map<String,Object> map=new HashMap<>();
+    	Chapter current=chapterService.findById(chapterId);
+    	map.put("content", current.getContent());
+    	map.put("novelId", current.getNovelid());
+    	map.put("title", current.getTitle());
+    	map.put("prev", this.findChapterByNovelAndSort(current.getNovelid(),current.getSort()-1));
+    	map.put("next", this.findChapterByNovelAndSort(current.getNovelid(),current.getSort()+1));
+    	return Utils.success(map);
+    }
+    
+    public Integer findChapterByNovelAndSort(int novelId,int sort) {
+    	Conditions con=Conditions.instance(Chapter.class);
+    	con.selectProperties("id");
+    	con.firstCriteria().andEqualTo("novelid",novelId).andEqualTo("sort",sort);
+    	Chapter chapter=chapterService.findOneByCondition(con);
+    	if(chapter==null) {
+    		return null;
+    	}
+    	return chapter.getId();
+    }
 }

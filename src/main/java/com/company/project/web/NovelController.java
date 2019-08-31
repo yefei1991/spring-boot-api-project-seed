@@ -54,4 +54,9 @@ public class NovelController extends AbstractController {
 	public Result chapters(int novelId) {
 		return novelService.findChapterByNovelId(novelId);
 	}
+	
+	@GetMapping("/detail")
+	public Result detail(int chapterId) {
+		return novelService.findDetailByChapterId(chapterId);
+	}
 }
