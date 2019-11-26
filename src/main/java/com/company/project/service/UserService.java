@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,13 +41,20 @@ public class UserService extends AbstractService<User> {
     public Result login(String username,String password) {
     	Conditions con=Conditions.instance(User.class);
     	con.notDeleted().andEqualTo("username", username);
-    	User user=this.findOneByCondition(con);
-    	if(user==null||!password.equals(user.getPassword())) {
-    		Utils.ServiceException("用户名或密码错误");
-    	}
-    	if(!user.getEnable()) {
-    		Utils.ServiceException("用户已被锁定,请联系管理员");
-    	}
+    	UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+    	Subject subject = SecurityUtils.getSubject();
+    	try {
+            subject.login(token);
+        } catch (IncorrectCredentialsException e) {
+        	Utils.ServiceException("用户名或密码错误");
+        } catch (LockedAccountException e) {
+        	Utils.ServiceException("用户已被锁定,请联系管理员");
+        } catch (AuthenticationException e) {
+        	Utils.ServiceException("用户名或密码错误");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    	User user=this.findByUserName(username);
     	List<Resource> resources=userMapper.findResourceByUser(user.getId());
     	JSONObject currentUser=new JSONObject();
     	currentUser.put("id", user.getId());
