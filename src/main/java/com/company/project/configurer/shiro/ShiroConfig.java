@@ -1,10 +1,7 @@
 package com.company.project.configurer.shiro;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.servlet.Filter;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
@@ -40,12 +37,12 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         //注意过滤器配置顺序 不能颠倒
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了，登出后跳转配置的loginUrl
-        filterChainDefinitionMap.put("/logout", "logout");
         // 配置不会被拦截的链接 顺序判断，在 ShiroConfiguration 中的 shiroFilter 处配置了 /ajaxLogin=anon，意味着可以不需要认证也可以访问
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/*.html", "anon");
         //filterChainDefinitionMap.put("/ajaxLogin", "anon");
         filterChainDefinitionMap.put("/user/login", "anon");
+        filterChainDefinitionMap.put("/user/logout", "anon");
         filterChainDefinitionMap.put("/**", "authc");
         //配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
         //shiroFilterFactoryBean.setLoginUrl("/unauth");

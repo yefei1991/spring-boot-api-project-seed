@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.company.project.core.AbstractService;
 import com.company.project.core.Result;
+import com.company.project.core.ResultGenerator;
 import com.company.project.dao.UserMapper;
 import com.company.project.model.Resource;
 import com.company.project.model.User;
@@ -38,6 +39,11 @@ public class UserService extends AbstractService<User> {
     @Autowired
     private UserMapper userMapper;
 
+    public Result logout() {
+    	Subject subject = SecurityUtils.getSubject();
+    	subject.logout();
+    	return ResultGenerator.genSuccessResult();
+    }
     public Result login(String username,String password) {
     	Conditions con=Conditions.instance(User.class);
     	con.notDeleted().andEqualTo("username", username);

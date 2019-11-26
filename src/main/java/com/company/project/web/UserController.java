@@ -1,6 +1,4 @@
 package com.company.project.web;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +10,6 @@ import com.company.project.core.Result;
 import com.company.project.model.User;
 import com.company.project.service.UserService;
 import com.company.project.util.Utils;
-import com.github.pagehelper.Page;
 
 /**
 * Created by CodeGenerator on 2019/08/10.
@@ -26,6 +23,11 @@ public class UserController extends AbstractController{
     @PostMapping("/login")
     public Result login(String username,String password) {
         return userService.login(username,password);
+    }
+    
+    @PostMapping("/logout")
+    public Result login() {
+        return userService.logout();
     }
     
     @GetMapping("/list")
