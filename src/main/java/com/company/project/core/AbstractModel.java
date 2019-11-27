@@ -3,9 +3,6 @@ package com.company.project.core;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 public class AbstractModel extends IdModel{
 	
@@ -19,6 +16,9 @@ public class AbstractModel extends IdModel{
 
 	@Column(name = "updateTime")
 	private Date updatetime;
+	
+	@Column(name = "lastUpdateBy")
+	private String lastUpdateBy;
 
 
 	public Boolean getDeleted() {
@@ -43,6 +43,14 @@ public class AbstractModel extends IdModel{
 
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
+	}
+
+	public String getLastUpdateBy() {
+		return lastUpdateBy;
+	}
+
+	public void setLastUpdateBy(String lastUpdateBy) {
+		this.lastUpdateBy = lastUpdateBy;
 	}
 
 }
