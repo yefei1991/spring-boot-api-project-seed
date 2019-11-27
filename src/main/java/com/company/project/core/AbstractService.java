@@ -107,10 +107,10 @@ public abstract class AbstractService<T extends IdModel> {
     public void saveOrUpdate(T t) {
     	Assert.state(t instanceof AbstractModel, "model must extends AbstractModel");
     	if(t.getId()==null) {
-    		((AbstractModel)t).setCreatetime(new Date());
+    		//((AbstractModel)t).setCreatetime(new Date());
     		mapper.insertSelective(t);
     	}else {
-    		((AbstractModel)t).setUpdatetime(new Date());
+    		//((AbstractModel)t).setUpdatetime(new Date());
     		mapper.updateByPrimaryKeySelective(t);
     	}
     }
