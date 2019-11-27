@@ -18,7 +18,7 @@ public class AbstractModel extends IdModel{
 	private Date updatetime;
 	
 	@Column(name = "lastUpdateBy")
-	private String lastUpdateBy;
+	private String lastupdateby;
 
 
 	public Boolean getDeleted() {
@@ -45,12 +45,12 @@ public class AbstractModel extends IdModel{
 		this.updatetime = updatetime;
 	}
 
-	public String getLastUpdateBy() {
-		return lastUpdateBy;
+	public String getLastupdateby() {
+		return lastupdateby;
 	}
 
-	public void setLastUpdateBy(String lastUpdateBy) {
-		this.lastUpdateBy = lastUpdateBy;
+	public void setLastupdateby(String lastupdateby) {
+		this.lastupdateby = lastupdateby;
 	}
 
 }

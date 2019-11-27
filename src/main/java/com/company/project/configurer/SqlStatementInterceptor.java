@@ -34,12 +34,13 @@ public class SqlStatementInterceptor implements Interceptor{
         	Subject subject = SecurityUtils.getSubject();
         	Object principal=subject.getPrincipal();
         	if(principal!=null) {
-        		obj.setLastUpdateBy(principal.toString());
+        		obj.setLastupdateby(principal.toString());
         	}
         	if (SqlCommandType.INSERT.equals(sqlCommandType)) {
         		//插入操作时，自动插入env
         		obj.setCreatetime(new Date());
         		obj.setUpdatetime(new Date());
+        		obj.setDeleted(false);
         	}else{
         		if (SqlCommandType.UPDATE.equals(sqlCommandType)) {
         			//update时，自动更新updated_at
