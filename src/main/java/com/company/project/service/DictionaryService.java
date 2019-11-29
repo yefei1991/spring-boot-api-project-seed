@@ -34,11 +34,12 @@ public class DictionaryService extends AbstractService<Dictionary> {
 
     public Result list(String name, Page page) {
 		PageHelper.startPage(page.getPageNum(), page.getPageSize());
-		Conditions con = Conditions.instance(Role.class);
+		Conditions con = Conditions.instance(Dictionary.class);
 		con.notDeleted();
 		if (StringUtils.isNotEmpty(name)) {
 			con.firstCriteria().andLike("name", "%" + name + "%");
 		}
+		con.orderBy("code").asc().orderBy("sort").asc();
 		List<Dictionary> list = this.findByCondition(con);
 		PageInfo pageResult = new PageInfo(list);
 		return Utils.success(pageResult);
@@ -46,6 +47,13 @@ public class DictionaryService extends AbstractService<Dictionary> {
 
 	public Result saveOrUpdateObj(Dictionary dictionary) {
 		this.saveOrUpdate(dictionary);
+		dictionaryCache.refreshByCode(dictionary.getCode());
+		return Utils.success();
+	}
+	
+	public Result deleteAndRefreshCache(Integer id) {
+		this.logicDeleteById(id);
+		Dictionary dictionary=this.findById(id);
 		dictionaryCache.refreshByCode(dictionary.getCode());
 		return Utils.success();
 	}

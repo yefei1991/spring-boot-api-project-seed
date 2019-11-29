@@ -13,4 +13,6 @@ public interface DictionaryCache {
 	void deleteByCode(String code);
 
 	List<Dic> findByCode(String code);
+	
+	String findByCode(List<Dic> dics,String code);
 }

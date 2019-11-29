@@ -37,8 +37,7 @@ public class DictionaryController extends AbstractController{
 
     @PostMapping("/delete")
     public Result delete(Integer id) {
-    	dictionaryService.logicDeleteById(id);
-    	return Utils.success();
+    	return dictionaryService.deleteAndRefreshCache(id);
     }
 
 }

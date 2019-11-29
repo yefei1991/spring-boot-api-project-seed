@@ -31,7 +31,7 @@ public class DictionaryRedisCache implements DictionaryCache{
 		Conditions con=Conditions.instance(Dictionary.class);
 		//this.findByCode("sex")
 		con.notDeleted();
-		con.orderBy("sort asc");
+		con.orderBy("sort").asc();
 		List<Dictionary> dictionarys=dictionaryService.findByCondition(con);
 		Map<String,List<Dic>> codeDicsMap=new HashMap<>();
 		for(Dictionary dictionary:dictionarys) {
@@ -59,7 +59,7 @@ public class DictionaryRedisCache implements DictionaryCache{
 		deleteByCode(code);
 		Conditions con=Conditions.instance(Dictionary.class);
 		con.notDeleted().andEqualTo("code", code);
-		con.orderBy("sort asc");
+		con.orderBy("sort").asc();
 		List<Dictionary> dictionarys=dictionaryService.findByCondition(con);
 		List<Dic> dics=new ArrayList<>();
 		for(Dictionary dictionary:dictionarys) {
@@ -86,4 +86,17 @@ public class DictionaryRedisCache implements DictionaryCache{
     public void init() {
         cacheAll();
     }
+
+	@Override
+	public String findByCode(List<Dic> dics, String code) {
+		if(dics.size()==0) {
+			return "未知选项";
+		}
+		for(Dic dic:dics) {
+			if(code.equals(dic.getValue())) {
+				return dic.getLabel();
+			}
+		}
+		return "未知选项";
+	}
 }

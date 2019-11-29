@@ -1,7 +1,9 @@
 package com.company.project.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import com.company.project.dao.ResourceMapper;
 import com.company.project.model.Resource;
 import com.company.project.service.commonl.DictionaryCache;
 import com.company.project.util.Conditions;
+import com.company.project.util.Converts;
 import com.company.project.util.Utils;
 import com.company.project.vo.Dic;
 import com.company.project.vo.DicConst;
@@ -35,6 +38,8 @@ public class ResourceService extends AbstractService<Resource> {
     @Autowired
     private DictionaryCache dictionaryCache;
     
+    private static final int DictionaryCode=0;
+    
     public Result list(String name,Page page) {
     	PageHelper.startPage(page.getPageNum(),page.getPageSize());
     	Conditions con=Conditions.instance(Resource.class);
@@ -43,8 +48,18 @@ public class ResourceService extends AbstractService<Resource> {
     		con.firstCriteria().andLike("name", "%"+name+"%");
     	}
     	List<Resource> list=this.findByCondition(con);
-    	PageInfo pageResult = new PageInfo(list);
-    	return Utils.success(pageResult);
+    	List<Dic> resourceTypeResource=dictionaryCache.findByCode(DicConst.RESOURCETYPE);
+    	PageInfo<Resource> pageResult = new PageInfo<Resource>(list);
+    	return Converts.pageToJson(pageResult, obj->{
+    		Map<String,Object> map=new HashMap<>();
+    		map.put("id", obj.getId());
+    		map.put("resurl", obj.getResurl());
+    		map.put("name", obj.getName());
+    		map.put("sort", obj.getSort());
+    		map.put("parentid", obj.getParentid());
+    		map.put("type", dictionaryCache.findByCode(resourceTypeResource,obj.getType()+""));
+    		return map;
+    	});
     }
     
     public Result saveOrUpdateUser(Resource resource) {
@@ -59,7 +74,7 @@ public class ResourceService extends AbstractService<Resource> {
     	JSONObject json=new JSONObject();
     	List<Dic> dictionarys=new ArrayList<>();
     	Conditions con=Conditions.instance(Resource.class);
-    	con.notDeleted().andEqualTo("type", Type.Dictionary.getCode());
+    	con.notDeleted().andEqualTo("type", DictionaryCode);
     	con.orderBy("sort desc");
     	List<Resource> resources=this.findByCondition(con);
 		dictionarys.add(Dic.build("根目录", "0"));
@@ -74,27 +89,4 @@ public class ResourceService extends AbstractService<Resource> {
     	return Utils.success(json);
     }
     
-    public static enum Type{
-    	Dictionary(0,"目录"),Menu(1,"菜单");
-    	private int code;
-    	private String text;
-    	private Type(int code,String text) {
-    		this.code=code;
-    		this.text=text;
-    	}
-		public int getCode() {
-			return code;
-		}
-		public void setCode(int code) {
-			this.code = code;
-		}
-		public String getText() {
-			return text;
-		}
-		public void setText(String text) {
-			this.text = text;
-		}
-    	
-    }
-
 }
