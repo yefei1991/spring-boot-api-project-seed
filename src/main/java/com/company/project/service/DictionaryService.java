@@ -12,6 +12,7 @@ import com.company.project.core.Result;
 import com.company.project.dao.DictionaryMapper;
 import com.company.project.model.Dictionary;
 import com.company.project.model.Role;
+import com.company.project.service.commonl.DictionaryCache;
 import com.company.project.util.Conditions;
 import com.company.project.util.Utils;
 import com.github.pagehelper.Page;
@@ -27,6 +28,9 @@ import com.github.pagehelper.PageInfo;
 public class DictionaryService extends AbstractService<Dictionary> {
     @Autowired
     private DictionaryMapper dictionaryMapper;
+    
+    @Autowired
+    private DictionaryCache dictionaryCache;
 
     public Result list(String name, Page page) {
 		PageHelper.startPage(page.getPageNum(), page.getPageSize());
@@ -42,6 +46,8 @@ public class DictionaryService extends AbstractService<Dictionary> {
 
 	public Result saveOrUpdateObj(Dictionary dictionary) {
 		this.saveOrUpdate(dictionary);
+		dictionaryCache.refreshByCode(dictionary.getCode());
 		return Utils.success();
 	}
+	
 }

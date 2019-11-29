@@ -19,13 +19,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ShiroConfig {
-	@Value("${spring.redis.shiro.host}")
+	@Value("${spring.redis.host}")
     private String host;
-    @Value("${spring.redis.shiro.port}")
+    @Value("${spring.redis.port}")
     private int port;
-    @Value("${spring.redis.shiro.timeout}")
+    @Value("${spring.redis.timeout}")
     private int timeout;
-    @Value("${spring.redis.shiro.password}")
+    @Value("${spring.redis.password}")
     private String password;
     @Bean
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {

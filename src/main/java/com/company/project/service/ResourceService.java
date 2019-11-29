@@ -13,8 +13,11 @@ import com.company.project.core.AbstractService;
 import com.company.project.core.Result;
 import com.company.project.dao.ResourceMapper;
 import com.company.project.model.Resource;
+import com.company.project.service.commonl.DictionaryCache;
 import com.company.project.util.Conditions;
 import com.company.project.util.Utils;
+import com.company.project.vo.Dic;
+import com.company.project.vo.DicConst;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,6 +31,9 @@ import com.github.pagehelper.PageInfo;
 public class ResourceService extends AbstractService<Resource> {
     @Autowired
     private ResourceMapper resourceMapper;
+    
+    @Autowired
+    private DictionaryCache dictionaryCache;
     
     public Result list(String name,Page page) {
     	PageHelper.startPage(page.getPageNum(),page.getPageSize());
@@ -51,29 +57,19 @@ public class ResourceService extends AbstractService<Resource> {
     
     public Result dictionary() {
     	JSONObject json=new JSONObject();
-    	List<JSONObject> types=new ArrayList<>();
-    	for(Type t:Type.values()) {
-    		JSONObject typeJson=new JSONObject();
-    		typeJson.put("label", t.getText());
-    		typeJson.put("value", t.getCode());
-    		types.add(typeJson);
-    	}
-    	List<JSONObject> dictionarys=new ArrayList<>();
+    	List<Dic> dictionarys=new ArrayList<>();
     	Conditions con=Conditions.instance(Resource.class);
     	con.notDeleted().andEqualTo("type", Type.Dictionary.getCode());
     	con.orderBy("sort desc");
     	List<Resource> resources=this.findByCondition(con);
-    	JSONObject root=new JSONObject();
-    	root.put("label", "根目录");
-    	root.put("value", 0);
-		dictionarys.add(root);
+		dictionarys.add(Dic.build("根目录", "0"));
     	for(Resource r:resources) {
     		JSONObject dJson=new JSONObject();
     		dJson.put("label", r.getName());
     		dJson.put("value", r.getId());
-    		dictionarys.add(dJson);
+    		dictionarys.add(Dic.build(r.getName(), r.getId()+""));
     	}
-    	json.put("types", types);
+    	json.put("types", dictionaryCache.findByCode(DicConst.RESOURCETYPE));
     	json.put("dictionarys", dictionarys);
     	return Utils.success(json);
     }
