@@ -18,5 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ${modelNameUpperCamel}Service extends AbstractService<${modelNameUpperCamel}> {
     @Autowired
     private ${modelNameUpperCamel}Mapper ${modelNameLowerCamel}Mapper;
+    
+    private final Logger logger = LoggerFactory.getLogger(${modelNameUpperCamel}Service.class);
 
 }

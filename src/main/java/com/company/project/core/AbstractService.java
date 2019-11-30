@@ -3,7 +3,6 @@ package com.company.project.core;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -23,7 +22,7 @@ public abstract class AbstractService<T extends IdModel> {
     protected Mapper<T> mapper;
 
     private Class<T> modelClass;    // 当前泛型真实类型的Class
-
+    
     public AbstractService() {
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
         modelClass = (Class<T>) pt.getActualTypeArguments()[0];
